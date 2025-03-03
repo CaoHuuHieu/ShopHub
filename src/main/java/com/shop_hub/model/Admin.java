@@ -29,4 +29,8 @@ public class Admin extends AbstractEntity{
     @Column(name = "active")
     private int active;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
 }

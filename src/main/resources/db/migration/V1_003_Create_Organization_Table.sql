@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS  organizations (
     privacy_url VARCHAR(255),
     created_by_id BIGINT,
     updated_by_id BIGINT,
-
+    status int
     CONSTRAINT fk_created_by FOREIGN KEY (created_by_id) REFERENCES admins(id) ON DELETE SET NULL,
     CONSTRAINT fk_updated_by FOREIGN KEY (updated_by_id) REFERENCES admins(id) ON DELETE SET NULL
 );

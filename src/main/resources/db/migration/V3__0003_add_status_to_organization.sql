@@ -1,1 +1,0 @@
-ALTER TABLE organizations add COLUMN status int null
