@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shop_hub_db
     username: postgres
-    password: postgres
+    password: 14022001
     driver-class-name: org.postgresql.Driver
     jpa:
       hibernate:
@@ -20,6 +20,7 @@ spring:
       max-lifetime: 600000
   flyway:
     enabled: true
+    locations: db/migration
     validate-on-migrate: true
     baseline-on-migrate: true
     baseline-version: 0
@@ -30,6 +31,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 security:
-  jwtSecret: 23131
-  jwtExpirationMs: 10
+  jwtSecret: kQ5UJqGGq0VczCUYwwzDbS1rdkC8ST1tNlJZjDdo59s=
+  jwtExpirationMs: 30
   jwtCookieName: cookyname
+  public_url: /login,organizations

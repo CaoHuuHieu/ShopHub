@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS admins (
      created_by_id BIGINT NULL,
      updated_by_id BIGINT NULL,
      role_id BIGINT,
-     FOREIGN KEY (role_id) REFERENCES role(id),
+     FOREIGN KEY (role_id) REFERENCES roles(id),
      FOREIGN KEY (created_by_id) REFERENCES admins(id),
-     FOREIGN KEY (updated_by_id) REFERENCES admins(id),
+     FOREIGN KEY (updated_by_id) REFERENCES admins(id)
 );

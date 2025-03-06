@@ -1,8 +1,6 @@
 package com.shop_hub.service.impl;
 
-import com.shop_hub.model.Admin;
 import com.shop_hub.repository.AdminRepository;
-import com.shop_hub.service.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +16,11 @@ public class AdminService implements UserDetailsService {
 
     private final AdminRepository adminRepository;
 
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Admin user = adminRepository.findByUsername(username)
+        return adminRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-
-        return UserDetailsImpl.build(user);
     }
+
 }

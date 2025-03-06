@@ -7,8 +7,6 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -20,8 +18,5 @@ public class Role extends AbstractEntity{
 
     @Column(name = "role_code")
     private String roleCode;
-
-    @OneToMany(mappedBy = "role")
-    private List<Admin> admins;
 
 }

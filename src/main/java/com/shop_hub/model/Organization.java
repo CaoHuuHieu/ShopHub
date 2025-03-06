@@ -46,6 +46,6 @@ public class Organization extends AbstractEntity{
     private Integer status;
 
     public static final int DELETED = 0;
-    public static final int ACTIVATED = 3;
+    public static final int ACTIVATED = 1;
 
 }
