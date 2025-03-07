@@ -1,27 +1,26 @@
 package com.shop_hub.service.impl;
 
+import com.shop_hub.dto.enums.RoleEnum;
 import com.shop_hub.dto.organization.OrganizationCreateDto;
 import com.shop_hub.dto.organization.OrganizationDto;
 import com.shop_hub.dto.organization.OrganizationUpdateDto;
-import com.shop_hub.dto.pageable.organization.PageableRequestDto;
-import com.shop_hub.dto.pageable.organization.PageableResponseDto;
+import com.shop_hub.dto.pageable.PageableRequestDto;
+import com.shop_hub.dto.pageable.PageableResponseDto;
+import com.shop_hub.exception.ForbiddenException;
 import com.shop_hub.exception.NotFoundException;
 import com.shop_hub.exception.ServerException;
 import com.shop_hub.mapper.OrganizationMapper;
-import com.shop_hub.model.Admin;
-import com.shop_hub.model.Organization;
-import com.shop_hub.model.SystemLog;
+import com.shop_hub.model.*;
 import com.shop_hub.repository.OrganizationRepository;
 import com.shop_hub.service.AbstractService;
 import com.shop_hub.service.OrganizationService;
 import com.shop_hub.service.SystemLogService;
-import com.shop_hub.util.AuthenticationUtil;
+import com.shop_hub.util.AuthenticationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,25 +44,34 @@ public class OrganizationServiceImpl
 
     @Override
     public OrganizationDto getOrganization(Long orgId) {
-        Organization organization = organizationRepository.findById(orgId)
-                .orElseThrow(() -> new NotFoundException("Organization Not Found: " + orgId));
+        User currentUser = AuthenticationUtils.getCurrentUser();
+
+        if(!currentUser.getRole().getRoleCode().equals(RoleEnum.SUPER_ADMIN.getRoleCode())
+                &&
+            (currentUser.getOrganization() == null || !currentUser.getOrganization().getId().equals(orgId)))
+        {
+            throw new ForbiddenException();
+        }
+
+        Organization organization = getOrganizationById(orgId);
         return mapToDto(organization);
     }
 
     @Override
     @Transactional
     public OrganizationDto createOrganization(OrganizationCreateDto org) {
-        Admin admin = AuthenticationUtil.getCurrentAdmin();
+        User currentUser = AuthenticationUtils.getCurrentUser();
         Organization organization = Organization.builder()
                 .name(org.getName())
                 .code(org.getCode())
                 .logo(org.getLogo())
                 .website(org.getWebsite())
+                .mobile(org.getMobile())
                 .email(org.getEmail())
                 .privacyUrl(org.getPrivacyUrl())
                 .termsUrl(org.getTermsUrl())
                 .address(org.getAddress())
-                .createdBy(admin)
+                .createdBy(currentUser)
                 .status(Organization.ACTIVATED)
                 .build();
 
@@ -83,10 +91,16 @@ public class OrganizationServiceImpl
     }
 
     @Override
+    @Transactional
     public OrganizationDto updateOrganization(Long orgId, OrganizationUpdateDto org) {
-        Organization organization = organizationRepository.findById(orgId)
-                .orElseThrow(() -> new NotFoundException("Organization Not Found: " + orgId));
-        Admin admin = AuthenticationUtil.getCurrentAdmin();
+        User currentUser = AuthenticationUtils.getCurrentUser();
+
+        // OrgAdmin only can update their org!
+        if(currentUser.getRole().getRoleCode().equals(RoleEnum.ORG_ADMIN.getRoleCode())
+                && !currentUser.getOrganization().getId().equals(orgId))
+                throw new ForbiddenException();
+
+        Organization organization = getOrganizationById(orgId);
         organization.setName(org.getName());
         organization.setCode(org.getCode());
         organization.setLogo(org.getLogo());
@@ -94,7 +108,7 @@ public class OrganizationServiceImpl
         organization.setPrivacyUrl(org.getPrivacyUrl());
         organization.setTermsUrl(org.getTermsUrl());
         organization.setAddress(org.getAddress());
-        organization.setUpdatedBy(admin);
+        organization.setUpdatedBy(currentUser);
         try{
             organizationRepository.save(organization);
             systemLogService.createLog("UpdateOrganization",
@@ -110,22 +124,30 @@ public class OrganizationServiceImpl
     }
 
     @Override
-    public void updateOrganizationStatus(Long orgId, int status) {
-        Organization organization = organizationRepository.findById(orgId)
-                .orElseThrow(() -> new NotFoundException("Organization Not Found: " + orgId));
-        organization.setStatus(status);
+    @Transactional
+    public void updateOrganizationStatus(Long orgId) {
+        User currentUser = AuthenticationUtils.getCurrentUser();
+        Organization organization = getOrganizationById(orgId);
+        organization.setStatus(organization.getStatus() == Organization.DELETED
+                ?  Organization.ACTIVATED : Organization.DELETED);
+        organization.setUpdatedBy(currentUser);
         try{
             organizationRepository.save(organization);
-            systemLogService.createLog("RemoveOrganization",
+            systemLogService.createLog("UpdateOrganizationStatus",
                     SystemLog.LOG_SUCCESS,
-                    "Remove Organization Successfully: " + organization.getId(),
+                    "Remove Organization Status Successfully: " + organization.getId(),
                     organization.toString());
         } catch (Exception e){
-            log.error("[OrganizationService][removeOrganization] ERROR {}", e.getMessage());
-            systemLogService.createLog("RemoveOrganization", SystemLog.LOG_ERROR, e.getMessage(), organization.toString());
+            log.error("[OrganizationService][updateOrganizationStatus] ERROR {}", e.getMessage());
+            systemLogService.createLog("UpdateOrganizationStatus", SystemLog.LOG_ERROR, e.getMessage(), organization.toString());
             throw new ServerException();
         }
 
+    }
+
+    private Organization getOrganizationById(Long orgId){
+        return organizationRepository.findById(orgId)
+                .orElseThrow(() -> new NotFoundException("Organization Not Found: " + orgId));
     }
 
     @Override
@@ -140,7 +162,12 @@ public class OrganizationServiceImpl
 
     @Override
     public Specification<Organization> createDefaultSpecification() {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+        return (root, query, cb) -> {
+            if(!AuthenticationUtils.getCurrentRole().equals(RoleEnum.SUPER_ADMIN.getRoleCode())) {
+                return cb.and(cb.equal(root.get(AbstractEntity_.ID), AuthenticationUtils.getCurrentUser().getOrganization().getId()));
+            }
+            return cb.conjunction();
+        };
     }
 
 }

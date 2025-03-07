@@ -1,9 +1,9 @@
 package com.shop_hub.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.shop_hub.dto.pageable.organization.FilterDto;
-import com.shop_hub.dto.pageable.organization.PageableRequestDto;
-import com.shop_hub.dto.pageable.organization.PageableResponseDto;
+import com.shop_hub.dto.pageable.FilterDto;
+import com.shop_hub.dto.pageable.PageableRequestDto;
+import com.shop_hub.dto.pageable.PageableResponseDto;
 import com.shop_hub.util.ObjectMapperUtils;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Join;

@@ -13,6 +13,8 @@ public class OrganizationCreateDto {
 
     private String website;
 
+    private String mobile;
+
     private String email;
 
     private String address;

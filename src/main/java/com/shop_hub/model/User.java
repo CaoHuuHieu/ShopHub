@@ -8,14 +8,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "admins")
-public class Admin extends AbstractEntity implements UserDetails {
+@Table(name = "users")
+public class User extends AbstractEntity implements UserDetails {
+
+    @Serial
+    private static final long serialVersionUID = 1905122041950251207L;
 
     @Column(name = "first_name")
     private String firstName;
@@ -35,12 +40,20 @@ public class Admin extends AbstractEntity implements UserDetails {
     @Column(name = "active")
     private int active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
     @Column(name = "password")
     private String password;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "org_id")
+    private Organization organization;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

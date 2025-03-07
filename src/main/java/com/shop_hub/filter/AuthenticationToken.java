@@ -1,23 +1,35 @@
 package com.shop_hub.filter;
 
-import com.shop_hub.model.Admin;
+import com.shop_hub.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+
 public class AuthenticationToken implements Authentication {
 
-    private Admin admin;
+    private final User user;
+    private final String currentOrgId;
+    private final String currentVenueIds;
 
-    public AuthenticationToken(Admin admin){
-        this.admin = admin;
+    public AuthenticationToken(User user, String currentOrgId, String currentVenueIds) {
+        this.user = user;
+        this.currentOrgId = currentOrgId;
+        this.currentVenueIds = currentVenueIds;
     }
 
+    public String getCurrentOrgId() {
+        return currentOrgId;
+    }
+
+    public String getCurrentVenueIds() {
+        return currentVenueIds;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.admin.getAuthorities();
+        return this.user.getAuthorities();
     }
 
     @Override
@@ -27,7 +39,7 @@ public class AuthenticationToken implements Authentication {
 
     @Override
     public Object getDetails() {
-        return this.admin;
+        return this.user;
     }
 
     @Override

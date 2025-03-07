@@ -1,12 +1,12 @@
 package com.shop_hub.repository;
 
-import com.shop_hub.model.Admin;
+import com.shop_hub.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface AdminRepository extends JpaRepository<Admin, Long> {
+public interface AdminRepository extends JpaRepository<User, Long> {
 
-    Optional<Admin> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
 }

@@ -3,8 +3,8 @@ package com.shop_hub.service;
 import com.shop_hub.dto.organization.OrganizationCreateDto;
 import com.shop_hub.dto.organization.OrganizationDto;
 import com.shop_hub.dto.organization.OrganizationUpdateDto;
-import com.shop_hub.dto.pageable.organization.PageableRequestDto;
-import com.shop_hub.dto.pageable.organization.PageableResponseDto;
+import com.shop_hub.dto.pageable.PageableRequestDto;
+import com.shop_hub.dto.pageable.PageableResponseDto;
 
 public interface OrganizationService {
 
@@ -16,6 +16,6 @@ public interface OrganizationService {
 
     OrganizationDto updateOrganization(Long orgId, OrganizationUpdateDto org);
 
-    void updateOrganizationStatus(Long orgId, int status);
+    void updateOrganizationStatus(Long orgId);
 
 }

@@ -1,4 +1,4 @@
-package com.shop_hub.dto.pageable.organization;
+package com.shop_hub.dto.pageable;
 
 import lombok.Builder;
 import lombok.Data;

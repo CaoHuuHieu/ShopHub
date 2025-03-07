@@ -3,11 +3,13 @@ package com.shop_hub.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @MappedSuperclass
-public abstract class AbstractEntity {
+
+public abstract class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
