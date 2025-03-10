@@ -19,8 +19,13 @@ public class OrganizationControllerImpl implements OrganizationController {
     private final OrganizationService organizationService;
 
     @Override
-    public PageableResponseDto<OrganizationDto> getOrganization(PageableRequestDto filter) {
+    public PageableResponseDto<OrganizationDto> getOrganizations(PageableRequestDto filter) {
         return organizationService.getOrganizations(filter);
+    }
+
+    @Override
+    public OrganizationDto getOrganization(Long orgId) {
+        return organizationService.getOrganization(orgId);
     }
 
     @Override
@@ -34,7 +39,7 @@ public class OrganizationControllerImpl implements OrganizationController {
     }
 
     @Override
-    public void updateOrganizationStatus(Long organizationId) {
+    public void activateOrganization(Long organizationId) {
         organizationService.updateOrganizationStatus(organizationId);
     }
 

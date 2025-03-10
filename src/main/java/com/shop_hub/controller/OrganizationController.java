@@ -15,7 +15,11 @@ public interface OrganizationController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    PageableResponseDto<OrganizationDto> getOrganization(@BindParam PageableRequestDto filter);
+    PageableResponseDto<OrganizationDto> getOrganizations(@BindParam PageableRequestDto filter);
+
+    @GetMapping("/{orgId}")
+    @PreAuthorize("isAuthenticated()")
+    OrganizationDto getOrganization(@PathVariable Long orgId);
 
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -26,9 +30,9 @@ public interface OrganizationController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ORG_ADMIN')")
     OrganizationDto updateOrganization(@PathVariable Long organizationId, @RequestBody @Validated OrganizationUpdateDto org);
 
-    @DeleteMapping
+    @PutMapping("/{organizationId}/activate")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void updateOrganizationStatus(@PathVariable Long organizationId);
+    void activateOrganization(@PathVariable Long organizationId);
 
 }
