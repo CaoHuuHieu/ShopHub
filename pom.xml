@@ -11,7 +11,7 @@
 	<groupId>com</groupId>
 	<artifactId>shop_hub</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>shop_hub</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -29,6 +29,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<start-class>com.shop_hub.ShopHubApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -163,6 +164,21 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.shop_hub.ShopHubApplication</mainClass>
+					<layout>JAR</layout>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -4,9 +4,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shop_hub_db
     username: postgres
-    password: 14022001
+    password: postgres
     driver-class-name: org.postgresql.Driver
     jpa:
+      open-in-view: false
       hibernate:
         ddl-auto: none
       show-sql: true
