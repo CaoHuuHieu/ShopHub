@@ -14,6 +14,7 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     public String login() {
+        System.out.println("sayhihi");
         return jwtUtil.generateTokenFromUsername("caohuuhieu");
     }
 }
