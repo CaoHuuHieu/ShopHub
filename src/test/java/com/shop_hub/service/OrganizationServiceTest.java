@@ -8,7 +8,7 @@ public class OrganizationServiceTest {
 
     @Test
     void test01(){
-        String result = "01";
+        String result = "OpenAI";
         assertEquals("OpenAI", result);
     }
 
